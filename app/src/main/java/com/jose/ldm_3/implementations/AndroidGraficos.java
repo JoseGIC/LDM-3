@@ -81,8 +81,7 @@ public class AndroidGraficos implements Graficos {
 
     @Override
     public void clear(int color) {
-        canvas.drawRGB((color & 0xff0000) >> 16, (color & 0xff00) >> 8,
-                (color & 0xff));
+        canvas.drawRGB((color & 0xff0000) >> 16, (color & 0xff00) >> 8, (color & 0xff));
     }
 
     @Override

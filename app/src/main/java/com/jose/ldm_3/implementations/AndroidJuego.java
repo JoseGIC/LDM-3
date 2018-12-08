@@ -35,12 +35,11 @@ public abstract class AndroidJuego extends Activity implements Juego {
         super.onCreate(savedInstanceState);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         boolean isLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
-        int frameBufferWidth = isLandscape ? 480 : 320;
-        int frameBufferHeight = isLandscape ? 320 : 480;
+        int frameBufferWidth = isLandscape ? 1280 : 720;
+        int frameBufferHeight = isLandscape ? 720 : 1280;
         Bitmap frameBuffer = Bitmap.createBitmap(frameBufferWidth, frameBufferHeight, Config.RGB_565);
 
         float scaleX = (float) frameBufferWidth / getWindowManager().getDefaultDisplay().getWidth();

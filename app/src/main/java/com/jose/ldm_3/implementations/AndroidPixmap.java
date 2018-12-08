@@ -7,6 +7,7 @@ import com.jose.ldm_3.interfaces.Graficos.PixmapFormat;
 
 
 public class AndroidPixmap implements Pixmap {
+
     Bitmap bitmap;
     PixmapFormat format;
 
@@ -34,4 +35,5 @@ public class AndroidPixmap implements Pixmap {
     public void dispose() {
         bitmap.recycle();
     }
+
 }

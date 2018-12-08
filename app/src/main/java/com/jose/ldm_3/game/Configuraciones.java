@@ -42,8 +42,7 @@ public class Configuraciones {
     public static void save(FileIO files) {
         BufferedWriter out = null;
         try {
-            out = new BufferedWriter(new OutputStreamWriter(
-                    files.escribirArchivo(".piratas")));
+            out = new BufferedWriter(new OutputStreamWriter(files.escribirArchivo(".piratas")));
             out.write(Boolean.toString(sonidoHabilitado));
             out.write("\n");
             for (int i = 0; i < 5; i++) {

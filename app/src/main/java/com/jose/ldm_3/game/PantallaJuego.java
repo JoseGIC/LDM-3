@@ -129,83 +129,133 @@ public class PantallaJuego extends Pantalla {
     @Override
     public void present(float deltaTime) {
         Graficos g = juego.getGraphics();
-
         g.drawPixmap(Assets.fondo, 0, 0);
         drawWorld(mundo);
-        if(estado == EstadoJuego.Preparado)
+        if (estado == EstadoJuego.Preparado)
             drawReadyUI();
-        if(estado == EstadoJuego.Ejecutandose)
+        if (estado == EstadoJuego.Ejecutandose)
             drawRunningUI();
-        if(estado == EstadoJuego.Pausado)
+        if (estado == EstadoJuego.Pausado)
             drawPausedUI();
-        if(estado == EstadoJuego.FinJuego)
+        if (estado == EstadoJuego.FinJuego)
             drawGameOverUI();
 
-
-        drawText(g, puntuacion, g.getWidth() / 2 - puntuacion.length()*20 / 2, g.getHeight() - 42);
+        drawText(g, puntuacion, g.getWidth() / 2 - puntuacion.length() * 20 / 2, g.getHeight() - 42);
     }
 
     private void drawWorld(Mundo mundo) {
         Graficos g = juego.getGraphics();
         JollyRoger jollyroger = mundo.jollyroger;
         Tripulacion head = jollyroger.partes.get(0);
-        Botin botin = mundo.botin;
+        Tripulacion botin = mundo.botin;
 
 
         Pixmap stainPixmap = null;
-        if(botin.tipo== Botin.TIPO_1)
-            stainPixmap = Assets.botin1;
-        if(botin.tipo == Botin.TIPO_2)
-            stainPixmap = Assets.botin2;
-        if(botin.tipo == Botin.TIPO_3)
-            stainPixmap = Assets.botin3;
+        if(botin.numPokemon == Botin.TIPO_1)
+            stainPixmap = Assets.pokemon1;
+        if(botin.numPokemon == Botin.TIPO_2)
+            stainPixmap = Assets.pokemon2;
+        if(botin.numPokemon == Botin.TIPO_3)
+            stainPixmap = Assets.pokemon3;
         int x = botin.x * 32;
         int y = botin.y * 32;
         g.drawPixmap(stainPixmap, x, y);
 
         int len = jollyroger.partes.size();
         for(int i = 1; i < len; i++) {
-            Tripulacion part = jollyroger.partes.get(i);
-            x = part.x * 32;
-            y = part.y * 32;
-            g.drawPixmap(Assets.tripulacion, x, y);
+            Tripulacion pokemon = jollyroger.partes.get(i);
+            Pixmap pokemonPixmap = null;
+
+            if (pokemon.direccion == JollyRoger.ARRIBA) {
+                if(pokemon.pixmap != null) {
+                    pokemonPixmap = pokemon.pixmap;
+                } else {
+                    pokemonPixmap = Assets.pokedex[pokemon.numPokemon][12];
+                }
+            }
+            if (pokemon.direccion == JollyRoger.IZQUIERDA) {
+                if(pokemon.pixmap != null) {
+                    pokemonPixmap = pokemon.pixmap;
+                } else {
+                    pokemonPixmap = Assets.pokedex[pokemon.numPokemon][4];
+                }
+            }
+            if (pokemon.direccion == JollyRoger.ABAJO) {
+                if(pokemon.pixmap != null) {
+                    pokemonPixmap = pokemon.pixmap;
+                } else {
+                    pokemonPixmap = Assets.pokedex[pokemon.numPokemon][0];
+                }
+            }
+            if (pokemon.direccion == JollyRoger.DERECHA) {
+                if(pokemon.pixmap != null) {
+                    pokemonPixmap = pokemon.pixmap;
+                } else {
+                    pokemonPixmap = Assets.pokedex[pokemon.numPokemon][8];
+                }
+            }
+            x = pokemon.x * 32;
+            y = pokemon.y * 32;
+            g.drawPixmap(pokemonPixmap, x, y);
         }
 
+
         Pixmap headPixmap = null;
-        if(jollyroger.direccion == JollyRoger.ARRIBA)
-            headPixmap = Assets.barcoarriba;
-        if(jollyroger.direccion == JollyRoger.IZQUIERDA)
-            headPixmap = Assets.barcoizquierda;
-        if(jollyroger.direccion == JollyRoger.ABAJO)
-            headPixmap = Assets.barcoabajo;
-        if(jollyroger.direccion == JollyRoger.DERECHA)
-            headPixmap = Assets.barcoderecha;
-        x = head.x * 32 + 16;
-        y = head.y * 32 + 16;
-        g.drawPixmap(headPixmap, x - headPixmap.getWidth() / 2, y - headPixmap.getHeight() / 2);
+
+        if (jollyroger.direccion == JollyRoger.ARRIBA) {
+            if(jollyroger.rojoPixmap != null) {
+                headPixmap = jollyroger.rojoPixmap;
+            } else {
+                headPixmap = Assets.rojoArriba1;
+            }
+        }
+        if (jollyroger.direccion == JollyRoger.IZQUIERDA) {
+            if(jollyroger.rojoPixmap != null) {
+                headPixmap = jollyroger.rojoPixmap;
+            } else {
+                headPixmap = Assets.rojoIzquierda1;
+            }
+        }
+        if (jollyroger.direccion == JollyRoger.ABAJO) {
+            if(jollyroger.rojoPixmap != null) {
+                headPixmap = jollyroger.rojoPixmap;
+            } else {
+                headPixmap = Assets.rojoAbajo1;
+            }
+        }
+        if (jollyroger.direccion == JollyRoger.DERECHA) {
+            if(jollyroger.rojoPixmap != null) {
+                headPixmap = jollyroger.rojoPixmap;
+            } else {
+                headPixmap = Assets.rojoDerecha1;
+            }
+        }
+        x = head.x * 32;
+        y = head.y * 32;
+        g.drawPixmap(headPixmap, x, y);
     }
 
     private void drawReadyUI() {
         Graficos g = juego.getGraphics();
 
         g.drawPixmap(Assets.preparado, 47, 100);
-        g.drawLine(0, 416, 480, 416, Color.BLACK);
+        //g.drawLine(0, 416, 480, 416, Color.BLACK);
     }
 
     private void drawRunningUI() {
         Graficos g = juego.getGraphics();
 
-        g.drawPixmap(Assets.botones, 0, 0, 64, 128, 64, 64);
-        g.drawLine(0, 416, 480, 416, Color.BLACK);
-        g.drawPixmap(Assets.botones, 0, 416, 64, 64, 64, 64);
-        g.drawPixmap(Assets.botones, 256, 416, 0, 64, 64, 64);
+        //g.drawPixmap(Assets.botones, 0, 0, 64, 128, 64, 64);
+        //g.drawLine(0, 416, 480, 416, Color.BLACK);
+        g.drawPixmap(Assets.botones, 0, 1216, 64, 64, 64, 64);
+        g.drawPixmap(Assets.botones, 656, 1216, 0, 64, 64, 64);
     }
 
     private void drawPausedUI() {
         Graficos g = juego.getGraphics();
 
         g.drawPixmap(Assets.menupausa, 80, 100);
-        g.drawLine(0, 416, 480, 416, Color.BLACK);
+        //g.drawLine(0, 416, 480, 416, Color.BLACK);
     }
 
     private void drawGameOverUI() {
@@ -213,7 +263,7 @@ public class PantallaJuego extends Pantalla {
 
         g.drawPixmap(Assets.finjuego, 62, 100);
         g.drawPixmap(Assets.botones, 128, 200, 0, 128, 64, 64);
-        g.drawLine(0, 416, 480, 416, Color.BLACK);
+        //g.drawLine(0, 416, 480, 416, Color.BLACK);
     }
 
     public void drawText(Graficos g, String line, int x, int y) {

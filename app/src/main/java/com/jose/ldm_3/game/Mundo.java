@@ -4,14 +4,14 @@ import java.util.Random;
 
 public class Mundo {
 
-    static final int MUNDO_ANCHO = 10;
-    static final int MUNDO_ALTO = 13;
+    static final int MUNDO_ANCHO = 19;
+    static final int MUNDO_ALTO = 36;
     static final int INCREMENTO_PUNTUACION = 10;
     static final float TICK_INICIAL = 0.5f;
     static final float TICK_DECREMENTO = 0.05f;
 
     public JollyRoger jollyroger;
-    public Botin botin;
+    public Tripulacion botin;
     public boolean finalJuego = false;
     public int puntuacion = 0;
 
@@ -41,7 +41,7 @@ public class Mundo {
         int botinX = random.nextInt(MUNDO_ANCHO);
         int botinY = random.nextInt(MUNDO_ALTO);
         while (true) {
-            if (campos[botinX][botinY] == false)
+            if (!campos[botinX][botinY])
                 break;
             botinX += 1;
             if (botinX >= MUNDO_ANCHO) {
@@ -52,12 +52,11 @@ public class Mundo {
                 }
             }
         }
-        botin = new Botin(botinX, botinY, random.nextInt(3));
+        botin = new Tripulacion(botinX, botinY, random.nextInt(3));
     }
 
     public void update(float deltaTime) {
         if (finalJuego)
-
             return;
 
         tiempoTick += deltaTime;
@@ -73,7 +72,7 @@ public class Mundo {
             Tripulacion head = jollyroger.partes.get(0);
             if (head.x == botin.x && head.y == botin.y) {
                 puntuacion += INCREMENTO_PUNTUACION;
-                jollyroger.abordaje();
+                jollyroger.abordaje(botin.numPokemon);
                 if (jollyroger.partes.size() == MUNDO_ANCHO * MUNDO_ALTO) {
                     finalJuego = true;
                     return;
