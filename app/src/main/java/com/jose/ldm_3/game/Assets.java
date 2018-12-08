@@ -17,26 +17,13 @@ public class Assets {
     public static Pixmap menupausa;
     public static Pixmap finjuego;
 
-    public static Pixmap rojoArriba1;
-    public static Pixmap rojoArriba2;
-    public static Pixmap rojoArriba3;
-    public static Pixmap rojoArriba4;
-    public static Pixmap rojoIzquierda1;
-    public static Pixmap rojoIzquierda2;
-    public static Pixmap rojoIzquierda3;
-    public static Pixmap rojoIzquierda4;
-    public static Pixmap rojoAbajo1;
-    public static Pixmap rojoAbajo2;
-    public static Pixmap rojoAbajo3;
-    public static Pixmap rojoAbajo4;
-    public static Pixmap rojoDerecha1;
-    public static Pixmap rojoDerecha2;
-    public static Pixmap rojoDerecha3;
-    public static Pixmap rojoDerecha4;
-
+    public static Pixmap[] rojo;
     public static Pixmap[][] pokedex;
-    public static Pixmap[] charmander;
-    public static Pixmap[] pikachu;
+    public static Pixmap[]  bulbasaur, ivysaur, venusaur,
+                            charmander, charmeleon, charizard,
+                            squirtle, wartortle, blastoise,
+                            pichu, pikachu, raichu,
+                            moltres, zapdos, articuno;
 
     public static Pixmap pokemon1;
     public static Pixmap pokemon2;

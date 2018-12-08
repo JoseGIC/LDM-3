@@ -13,16 +13,14 @@ public class JollyRoger{
     public static final int IZQUIERDA= 1;
     public static final int ABAJO = 2;
     public static final int DERECHA = 3;
-    public List<Tripulacion> partes = new ArrayList<Tripulacion>();
+    public List<Tripulacion> equipo = new ArrayList<Tripulacion>();
     public int direccion;
     public Pixmap rojoPixmap, rojoLastPixmap;
 
 
     public JollyRoger() {
-        direccion = ARRIBA;
-        partes.add(new Tripulacion(5, 6, 0));
-        //partes.add(new Tripulacion(5, 7, 0));
-        //partes.add(new Tripulacion(5, 8, 0));
+        direccion = ABAJO;
+        equipo.add(new Tripulacion(10, 19, -1));
     }
 
 
@@ -41,9 +39,9 @@ public class JollyRoger{
 
 
     public void abordaje(int tipo) {
-        Tripulacion end = partes.get(partes.size()-1);
+        Tripulacion end = equipo.get(equipo.size()-1);
         Tripulacion nuevoPokemon = new Tripulacion(end.x, end.y, tipo);
-        partes.add(nuevoPokemon);
+        equipo.add(nuevoPokemon);
         calcularDireccion(nuevoPokemon, end);
     }
 
@@ -66,12 +64,12 @@ public class JollyRoger{
 
 
     public void avance() {
-        Tripulacion barco = partes.get(0);
+        Tripulacion barco = equipo.get(0);
 
-        int len = partes.size() - 1;
+        int len = equipo.size() - 1;
         for(int i = len; i > 0; i--) {
-            Tripulacion primero = partes.get(i-1);
-            Tripulacion segundo = partes.get(i);
+            Tripulacion primero = equipo.get(i-1);
+            Tripulacion segundo = equipo.get(i);
             calcularDireccion(segundo, primero);
             animacionPokemons(segundo);
             segundo.x = primero.x;
@@ -101,10 +99,10 @@ public class JollyRoger{
 
 
     public boolean comprobarChoque() {
-        int len = partes.size();
-        Tripulacion barco = partes.get(0);
+        int len = equipo.size();
+        Tripulacion barco = equipo.get(0);
         for(int i = 1; i < len; i++) {
-            Tripulacion parte = partes.get(i);
+            Tripulacion parte = equipo.get(i);
             if(parte.x == barco.x && parte.y == barco.y)
                 return true;
         }
@@ -113,56 +111,56 @@ public class JollyRoger{
 
 
     public void animacionRojo() {
-        if (direccion == ARRIBA) {
-            if (rojoLastPixmap == Assets.rojoArriba1) {
-                rojoPixmap = Assets.rojoArriba2;
-            } else if (rojoLastPixmap == Assets.rojoArriba2) {
-                rojoPixmap = Assets.rojoArriba3;
-            } else if (rojoLastPixmap == Assets.rojoArriba3) {
-                rojoPixmap = Assets.rojoArriba4;
-            } else if (rojoLastPixmap == Assets.rojoArriba4) {
-                rojoPixmap = Assets.rojoArriba1;
+        if (direccion == ABAJO) {
+            if (rojoLastPixmap == Assets.rojo[0]) {
+                rojoPixmap = Assets.rojo[1];
+            } else if (rojoLastPixmap == Assets.rojo[1]) {
+                rojoPixmap = Assets.rojo[2];
+            } else if (rojoLastPixmap == Assets.rojo[2]) {
+                rojoPixmap = Assets.rojo[3];
+            } else if (rojoLastPixmap == Assets.rojo[3]) {
+                rojoPixmap = Assets.rojo[0];
             } else {
-                rojoPixmap = Assets.rojoArriba1;
+                rojoPixmap = Assets.rojo[0];
             }
         }
         if (direccion == IZQUIERDA) {
-            if (rojoLastPixmap == Assets.rojoIzquierda1) {
-                rojoPixmap = Assets.rojoIzquierda2;
-            } else if (rojoLastPixmap == Assets.rojoIzquierda2) {
-                rojoPixmap = Assets.rojoIzquierda3;
-            } else if (rojoLastPixmap == Assets.rojoIzquierda3) {
-                rojoPixmap = Assets.rojoIzquierda4;
-            } else if (rojoLastPixmap == Assets.rojoIzquierda4) {
-                rojoPixmap = Assets.rojoIzquierda1;
+            if (rojoLastPixmap == Assets.rojo[4]) {
+                rojoPixmap = Assets.rojo[5];
+            } else if (rojoLastPixmap == Assets.rojo[5]) {
+                rojoPixmap = Assets.rojo[6];
+            } else if (rojoLastPixmap == Assets.rojo[6]) {
+                rojoPixmap = Assets.rojo[7];
+            } else if (rojoLastPixmap == Assets.rojo[7]) {
+                rojoPixmap = Assets.rojo[4];
             } else {
-                rojoPixmap = Assets.rojoIzquierda1;
-            }
-        }
-        if (direccion == ABAJO) {
-            if (rojoLastPixmap == Assets.rojoAbajo1) {
-                rojoPixmap = Assets.rojoAbajo2;
-            } else if (rojoLastPixmap == Assets.rojoAbajo2) {
-                rojoPixmap = Assets.rojoAbajo3;
-            } else if (rojoLastPixmap == Assets.rojoAbajo3) {
-                rojoPixmap = Assets.rojoAbajo4;
-            } else if (rojoLastPixmap == Assets.rojoAbajo4) {
-                rojoPixmap = Assets.rojoAbajo1;
-            } else {
-                rojoPixmap = Assets.rojoAbajo1;
+                rojoPixmap = Assets.rojo[4];
             }
         }
         if (direccion == DERECHA) {
-            if (rojoLastPixmap == Assets.rojoDerecha1) {
-                rojoPixmap = Assets.rojoDerecha2;
-            } else if (rojoLastPixmap == Assets.rojoDerecha2) {
-                rojoPixmap = Assets.rojoDerecha3;
-            } else if (rojoLastPixmap == Assets.rojoDerecha3) {
-                rojoPixmap = Assets.rojoDerecha4;
-            } else if (rojoLastPixmap == Assets.rojoDerecha4) {
-                rojoPixmap = Assets.rojoDerecha1;
+            if (rojoLastPixmap == Assets.rojo[8]) {
+                rojoPixmap = Assets.rojo[9];
+            } else if (rojoLastPixmap == Assets.rojo[9]) {
+                rojoPixmap = Assets.rojo[10];
+            } else if (rojoLastPixmap == Assets.rojo[10]) {
+                rojoPixmap = Assets.rojo[11];
+            } else if (rojoLastPixmap == Assets.rojo[11]) {
+                rojoPixmap = Assets.rojo[8];
             } else {
-                rojoPixmap = Assets.rojoDerecha1;
+                rojoPixmap = Assets.rojo[8];
+            }
+        }
+        if (direccion == ARRIBA) {
+            if (rojoLastPixmap == Assets.rojo[12]) {
+                rojoPixmap = Assets.rojo[13];
+            } else if (rojoLastPixmap == Assets.rojo[13]) {
+                rojoPixmap = Assets.rojo[14];
+            } else if (rojoLastPixmap == Assets.rojo[14]) {
+                rojoPixmap = Assets.rojo[15];
+            } else if (rojoLastPixmap == Assets.rojo[15]) {
+                rojoPixmap = Assets.rojo[12];
+            } else {
+                rojoPixmap = Assets.rojo[12];
             }
         }
         rojoLastPixmap = rojoPixmap;
@@ -170,17 +168,17 @@ public class JollyRoger{
 
 
     public void animacionPokemons(Tripulacion pokemon) {
-        if (pokemon.direccion == ARRIBA) {
-            if (pokemon.lastPixmap == Assets.pokedex[pokemon.numPokemon][12]) {
-                pokemon.pixmap = Assets.pokedex[pokemon.numPokemon][13];
-            } else if (pokemon.lastPixmap == Assets.pokedex[pokemon.numPokemon][13]) {
-                pokemon.pixmap = Assets.pokedex[pokemon.numPokemon][14];
-            } else if (pokemon.lastPixmap == Assets.pokedex[pokemon.numPokemon][14]) {
-                pokemon.pixmap = Assets.pokedex[pokemon.numPokemon][15];
-            } else if (pokemon.lastPixmap == Assets.pokedex[pokemon.numPokemon][15]) {
-                pokemon.pixmap = Assets.pokedex[pokemon.numPokemon][12];
+        if (pokemon.direccion == ABAJO) {
+            if (pokemon.lastPixmap == Assets.pokedex[pokemon.numPokemon][0]) {
+                pokemon.pixmap = Assets.pokedex[pokemon.numPokemon][1];
+            } else if (pokemon.lastPixmap == Assets.pokedex[pokemon.numPokemon][1]) {
+                pokemon.pixmap = Assets.pokedex[pokemon.numPokemon][2];
+            } else if (pokemon.lastPixmap == Assets.pokedex[pokemon.numPokemon][2]) {
+                pokemon.pixmap = Assets.pokedex[pokemon.numPokemon][3];
+            } else if (pokemon.lastPixmap == Assets.pokedex[pokemon.numPokemon][3]) {
+                pokemon.pixmap = Assets.pokedex[pokemon.numPokemon][0];
             } else {
-                pokemon.pixmap = Assets.pokedex[pokemon.numPokemon][12];
+                pokemon.pixmap = Assets.pokedex[pokemon.numPokemon][0];
             }
         }
         if (pokemon.direccion == IZQUIERDA) {
@@ -196,19 +194,6 @@ public class JollyRoger{
                 pokemon.pixmap = Assets.pokedex[pokemon.numPokemon][4];
             }
         }
-        if (pokemon.direccion == ABAJO) {
-            if (pokemon.lastPixmap == Assets.pokedex[pokemon.numPokemon][0]) {
-                pokemon.pixmap = Assets.pokedex[pokemon.numPokemon][1];
-            } else if (pokemon.lastPixmap == Assets.pokedex[pokemon.numPokemon][1]) {
-                pokemon.pixmap = Assets.pokedex[pokemon.numPokemon][2];
-            } else if (pokemon.lastPixmap == Assets.pokedex[pokemon.numPokemon][2]) {
-                pokemon.pixmap = Assets.pokedex[pokemon.numPokemon][3];
-            } else if (pokemon.lastPixmap == Assets.pokedex[pokemon.numPokemon][3]) {
-                pokemon.pixmap = Assets.pokedex[pokemon.numPokemon][0];
-            } else {
-                pokemon.pixmap = Assets.pokedex[pokemon.numPokemon][0];
-            }
-        }
         if (pokemon.direccion == DERECHA) {
             if (pokemon.lastPixmap == Assets.pokedex[pokemon.numPokemon][8]) {
                 pokemon.pixmap = Assets.pokedex[pokemon.numPokemon][9];
@@ -220,6 +205,19 @@ public class JollyRoger{
                 pokemon.pixmap = Assets.pokedex[pokemon.numPokemon][8];
             } else {
                 pokemon.pixmap = Assets.pokedex[pokemon.numPokemon][8];
+            }
+        }
+        if (pokemon.direccion == ARRIBA) {
+            if (pokemon.lastPixmap == Assets.pokedex[pokemon.numPokemon][12]) {
+                pokemon.pixmap = Assets.pokedex[pokemon.numPokemon][13];
+            } else if (pokemon.lastPixmap == Assets.pokedex[pokemon.numPokemon][13]) {
+                pokemon.pixmap = Assets.pokedex[pokemon.numPokemon][14];
+            } else if (pokemon.lastPixmap == Assets.pokedex[pokemon.numPokemon][14]) {
+                pokemon.pixmap = Assets.pokedex[pokemon.numPokemon][15];
+            } else if (pokemon.lastPixmap == Assets.pokedex[pokemon.numPokemon][15]) {
+                pokemon.pixmap = Assets.pokedex[pokemon.numPokemon][12];
+            } else {
+                pokemon.pixmap = Assets.pokedex[pokemon.numPokemon][12];
             }
         }
         pokemon.lastPixmap = pokemon.pixmap;

@@ -146,31 +146,32 @@ public class PantallaJuego extends Pantalla {
     private void drawWorld(Mundo mundo) {
         Graficos g = juego.getGraphics();
         JollyRoger jollyroger = mundo.jollyroger;
-        Tripulacion head = jollyroger.partes.get(0);
-        Tripulacion botin = mundo.botin;
+        Tripulacion head = jollyroger.equipo.get(0);
+
+        Tripulacion pokemonSalvaje = mundo.pokemonSalvaje;
 
 
-        Pixmap stainPixmap = null;
-        if(botin.numPokemon == Botin.TIPO_1)
-            stainPixmap = Assets.pokemon1;
-        if(botin.numPokemon == Botin.TIPO_2)
-            stainPixmap = Assets.pokemon2;
-        if(botin.numPokemon == Botin.TIPO_3)
-            stainPixmap = Assets.pokemon3;
-        int x = botin.x * 32;
-        int y = botin.y * 32;
-        g.drawPixmap(stainPixmap, x, y);
+        Pixmap pokemonSalvajePixmap = null;
+        if(pokemonSalvaje.pixmap != null) {
+            pokemonSalvajePixmap = pokemonSalvaje.pixmap;
+        } else {
+            pokemonSalvajePixmap = Assets.pokedex[pokemonSalvaje.numPokemon][0];
+        }
+        int x = pokemonSalvaje.x * 32;
+        int y = pokemonSalvaje.y * 32;
+        g.drawPixmap(pokemonSalvajePixmap, x, y);
 
-        int len = jollyroger.partes.size();
+
+        int len = jollyroger.equipo.size();
         for(int i = 1; i < len; i++) {
-            Tripulacion pokemon = jollyroger.partes.get(i);
+            Tripulacion pokemon = jollyroger.equipo.get(i);
             Pixmap pokemonPixmap = null;
 
-            if (pokemon.direccion == JollyRoger.ARRIBA) {
+            if (pokemon.direccion == JollyRoger.ABAJO) {
                 if(pokemon.pixmap != null) {
                     pokemonPixmap = pokemon.pixmap;
                 } else {
-                    pokemonPixmap = Assets.pokedex[pokemon.numPokemon][12];
+                    pokemonPixmap = Assets.pokedex[pokemon.numPokemon][0];
                 }
             }
             if (pokemon.direccion == JollyRoger.IZQUIERDA) {
@@ -180,18 +181,18 @@ public class PantallaJuego extends Pantalla {
                     pokemonPixmap = Assets.pokedex[pokemon.numPokemon][4];
                 }
             }
-            if (pokemon.direccion == JollyRoger.ABAJO) {
-                if(pokemon.pixmap != null) {
-                    pokemonPixmap = pokemon.pixmap;
-                } else {
-                    pokemonPixmap = Assets.pokedex[pokemon.numPokemon][0];
-                }
-            }
             if (pokemon.direccion == JollyRoger.DERECHA) {
                 if(pokemon.pixmap != null) {
                     pokemonPixmap = pokemon.pixmap;
                 } else {
                     pokemonPixmap = Assets.pokedex[pokemon.numPokemon][8];
+                }
+            }
+            if (pokemon.direccion == JollyRoger.ARRIBA) {
+                if(pokemon.pixmap != null) {
+                    pokemonPixmap = pokemon.pixmap;
+                } else {
+                    pokemonPixmap = Assets.pokedex[pokemon.numPokemon][12];
                 }
             }
             x = pokemon.x * 32;
@@ -201,33 +202,32 @@ public class PantallaJuego extends Pantalla {
 
 
         Pixmap headPixmap = null;
-
-        if (jollyroger.direccion == JollyRoger.ARRIBA) {
+        if (jollyroger.direccion == JollyRoger.ABAJO) {
             if(jollyroger.rojoPixmap != null) {
                 headPixmap = jollyroger.rojoPixmap;
             } else {
-                headPixmap = Assets.rojoArriba1;
+                headPixmap = Assets.rojo[1];
             }
         }
         if (jollyroger.direccion == JollyRoger.IZQUIERDA) {
             if(jollyroger.rojoPixmap != null) {
                 headPixmap = jollyroger.rojoPixmap;
             } else {
-                headPixmap = Assets.rojoIzquierda1;
-            }
-        }
-        if (jollyroger.direccion == JollyRoger.ABAJO) {
-            if(jollyroger.rojoPixmap != null) {
-                headPixmap = jollyroger.rojoPixmap;
-            } else {
-                headPixmap = Assets.rojoAbajo1;
+                headPixmap = Assets.rojo[4];
             }
         }
         if (jollyroger.direccion == JollyRoger.DERECHA) {
             if(jollyroger.rojoPixmap != null) {
                 headPixmap = jollyroger.rojoPixmap;
             } else {
-                headPixmap = Assets.rojoDerecha1;
+                headPixmap = Assets.rojo[8];
+            }
+        }
+        if (jollyroger.direccion == JollyRoger.ARRIBA) {
+            if(jollyroger.rojoPixmap != null) {
+                headPixmap = jollyroger.rojoPixmap;
+            } else {
+                headPixmap = Assets.rojo[12];
             }
         }
         x = head.x * 32;
