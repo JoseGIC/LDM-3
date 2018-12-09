@@ -22,7 +22,6 @@ public class MainMenuScreen extends Pantalla {
 
     @Override
     public void update(float deltaTime) {
-        Graficos g = juego.getGraphics();
         List<TouchEvent> touchEvents = juego.getInput().getTouchEvents();
         juego.getInput().getKeyEvents();
 
