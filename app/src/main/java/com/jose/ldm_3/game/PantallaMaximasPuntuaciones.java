@@ -15,7 +15,11 @@ public class PantallaMaximasPuntuaciones extends Pantalla {
         super(juego);
 
         for (int i = 0; i < 5; i++) {
-            lineas[i] = "" + (i + 1) + ". " + Configuraciones.maxPuntuaciones[i];
+            lineas[i] = (i + 1) + "o." + Configuraciones.maxPuntuaciones[i] + " p";
+        }
+        if(Configuraciones.sonidoHabilitado) {
+            Assets.musicaPuntuaciones.setLooping(true);
+            Assets.musicaPuntuaciones.play();
         }
     }
 
@@ -28,30 +32,41 @@ public class PantallaMaximasPuntuaciones extends Pantalla {
         for (int i = 0; i < len; i++) {
             TouchEvent event = touchEvents.get(i);
             if (event.type == TouchEvent.TOUCH_UP) {
-                if (event.x < 64 && event.y > 416) {
-                    if(Configuraciones.sonidoHabilitado)
-                        Assets.pulsar.play(1);
+                if(inBounds(event, 295, 1150, 130, 130)) {
                     juego.setScreen(new MainMenuScreen(juego));
+                    if(Configuraciones.sonidoHabilitado) {
+                        Assets.musicaPuntuaciones.stop();
+                        Assets.pulsar.play(1);
+                    }
                     return;
                 }
             }
         }
     }
 
+    private boolean inBounds(TouchEvent event, int x, int y, int width, int height) {
+        if(event.x > x && event.x < x + width - 1 &&
+                event.y > y && event.y < y + height - 1)
+            return true;
+        else
+            return false;
+    }
+
     @Override
     public void present(float deltaTime) {
         Graficos g = juego.getGraphics();
 
-        g.drawPixmap(Assets.fondo, 0, 0);
-        g.drawPixmap(Assets.menuprincipal, 64, 20, 0, 42, 196, 42);
+        g.drawPixmap(Assets.fondo2, 0, 0);
+        g.drawPixmap(Assets.puntuaciones, 0, 0);
+        g.drawPixmap(Assets.botonSalir, 295, 1150);
 
-        int y = 100;
+        int y = 320;
         for (int i = 0; i < 5; i++) {
-            dibujarTexto(g, lineas[i], 20, y);
+            dibujarTexto(g, lineas[i], 180, y);
             y += 50;
         }
 
-        g.drawPixmap(Assets.botones, 0, 416, 64, 64, 64, 64);
+
     }
 
     public void dibujarTexto(Graficos g, String linea, int x, int y) {
@@ -60,22 +75,23 @@ public class PantallaMaximasPuntuaciones extends Pantalla {
             char character = linea.charAt(i);
 
             if (character == ' ') {
-                x += 20;
+                x += 30;
                 continue;
             }
 
-            int srcX = 0;
-            int srcWidth = 0;
+            int index;
             if (character == '.') {
-                srcX = 200;
-                srcWidth = 10;
+                index = 11;
+            } else if(character == 'o') {
+                    index = 10;
+            } else if(character == 'p') {
+                index = 12;
             } else {
-                srcX = (character - '0') * 20;
-                srcWidth = 20;
+                index = (character - '0');
             }
 
-            g.drawPixmap(Assets.numeros, x, y, srcX, 0, srcWidth, 32);
-            x += srcWidth;
+            g.drawPixmap(Assets.numeros[index], x, y);
+            x += 30;
         }
     }
 

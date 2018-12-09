@@ -19,21 +19,55 @@ public class LoadingScreen extends Pantalla {
     public void update(float deltaTime) {
         Graficos g = juego.getGraphics();
 
-        Assets.fondo = g.newPixmap("pokemon/fondo2_720.png", PixmapFormat.RGB565);
-        Assets.logo = g.newPixmap("logo.png", PixmapFormat.ARGB4444);
-        Assets.menuprincipal = g.newPixmap("menuprincipal.png", PixmapFormat.ARGB4444);
-        Assets.botones = g.newPixmap("botones.png", PixmapFormat.ARGB4444);
-        Assets.ayuda1 = g.newPixmap("ayuda1.png", PixmapFormat.ARGB4444);
-        Assets.ayuda2 = g.newPixmap("ayuda2.png", PixmapFormat.ARGB4444);
-        Assets.ayuda3 = g.newPixmap("ayuda3.png", PixmapFormat.ARGB4444);
-        Assets.numeros = g.newPixmap("numeros.png", PixmapFormat.ARGB4444);
-        Assets.preparado = g.newPixmap("preparado.png", PixmapFormat.ARGB4444);
-        Assets.menupausa = g.newPixmap("menupausa.png", PixmapFormat.ARGB4444);
-        Assets.finjuego = g.newPixmap("finjuego.png", PixmapFormat.ARGB4444);
+        Assets.fondo1 = g.newPixmap("pokemon/fondo1_720.png", PixmapFormat.RGB565);
+        Assets.fondo2 = g.newPixmap("pokemon/fondo2_720.png", PixmapFormat.RGB565);
+        Assets.fondo3 = g.newPixmap("pokemon/fondo3_720.png", PixmapFormat.RGB565);
 
-        Assets.pulsar = juego.getAudio().nuevoSonido("pulsar.ogg");
-        Assets.ataque = juego.getAudio().nuevoSonido("ataque.ogg");
-        Assets.derrota = juego.getAudio().nuevoSonido("derrota.ogg");
+        Assets.logo = g.newPixmap("pokemon/titulo.png", PixmapFormat.ARGB4444);
+        Assets.menuprincipal = g.newPixmap("pokemon/menu_principal.png", PixmapFormat.ARGB4444);
+
+        Assets.botonIzquierda = g.newPixmap("pokemon/boton_izquierda.png", PixmapFormat.ARGB4444);
+        Assets.botonDerecha = g.newPixmap("pokemon/boton_derecha.png", PixmapFormat.ARGB4444);
+        Assets.botonSalir = g.newPixmap("pokemon/boton_salir.png", PixmapFormat.ARGB4444);
+        Assets.botonPausa = g.newPixmap("pokemon/boton_pausa.png", PixmapFormat.ARGB4444);
+        Assets.botonVolumen = g.newPixmap("pokemon/boton_volumen.png", PixmapFormat.ARGB4444);
+        Assets.botonMute = g.newPixmap("pokemon/boton_mute.png", PixmapFormat.ARGB4444);
+
+        Assets.puntuaciones = g.newPixmap("pokemon/pantalla_puntuaciones.png", PixmapFormat.ARGB4444);
+        Assets.ayuda1 = g.newPixmap("pokemon/pantalla_ayuda_1.png", PixmapFormat.ARGB4444);
+        Assets.ayuda2 = g.newPixmap("pokemon/pantalla_ayuda_2.png", PixmapFormat.ARGB4444);
+        Assets.ayuda3 = g.newPixmap("pokemon/pantalla_ayuda_3.png", PixmapFormat.ARGB4444);
+
+        Assets.preparado = g.newPixmap("pokemon/preparado.png", PixmapFormat.ARGB4444);
+        Assets.menupausa = g.newPixmap("pokemon/menu_pausa.png", PixmapFormat.ARGB4444);
+        Assets.finjuego = g.newPixmap("pokemon/fin_del_juego.png", PixmapFormat.ARGB4444);
+
+        Assets.numeros = new Pixmap[] {
+                g.newPixmap("pokemon/numeros/00.png", PixmapFormat.ARGB4444),
+                g.newPixmap("pokemon/numeros/01.png", PixmapFormat.ARGB4444),
+                g.newPixmap("pokemon/numeros/02.png", PixmapFormat.ARGB4444),
+                g.newPixmap("pokemon/numeros/03.png", PixmapFormat.ARGB4444),
+                g.newPixmap("pokemon/numeros/04.png", PixmapFormat.ARGB4444),
+                g.newPixmap("pokemon/numeros/05.png", PixmapFormat.ARGB4444),
+                g.newPixmap("pokemon/numeros/06.png", PixmapFormat.ARGB4444),
+                g.newPixmap("pokemon/numeros/07.png", PixmapFormat.ARGB4444),
+                g.newPixmap("pokemon/numeros/08.png", PixmapFormat.ARGB4444),
+                g.newPixmap("pokemon/numeros/09.png", PixmapFormat.ARGB4444),
+                g.newPixmap("pokemon/numeros/ordinal.png", PixmapFormat.ARGB4444),
+                g.newPixmap("pokemon/numeros/punto.png", PixmapFormat.ARGB4444),
+                g.newPixmap("pokemon/numeros/puntos.png", PixmapFormat.ARGB4444)
+        };
+
+// ------ Sonidos ------ //
+
+        Assets.pulsar = juego.getAudio().nuevoSonido("pokemon/audio/Choose.mp3");
+        Assets.capturar = juego.getAudio().nuevoSonido("pokemon/audio/balldrop.mp3");
+        Assets.derrota = juego.getAudio().nuevoSonido("pokemon/audio/normaldamage.mp3");
+        Assets.musicaInicio = juego.getAudio().nuevaMusica("pokemon/audio/Intro.mp3");
+        Assets.musicaJuego = juego.getAudio().nuevaMusica("pokemon/audio/Frente Batalla.mp3");
+        Assets.musicaPuntuaciones = juego.getAudio().nuevaMusica("pokemon/audio/Gimnasio.mp3");
+        Assets.musicaAyuda = juego.getAudio().nuevaMusica("pokemon/audio/Centro Pokemon.mp3");
+
 
 // ------- Rojo ------- //
 
@@ -343,8 +377,27 @@ public class LoadingScreen extends Pantalla {
                 g.newPixmap("pokemon/15/16.png", PixmapFormat.RGB565)
         };
 
+        Assets.ekans = new Pixmap[]{
+                g.newPixmap("pokemon/16/01.png", PixmapFormat.RGB565),
+                g.newPixmap("pokemon/16/02.png", PixmapFormat.RGB565),
+                g.newPixmap("pokemon/16/03.png", PixmapFormat.RGB565),
+                g.newPixmap("pokemon/16/04.png", PixmapFormat.RGB565),
+                g.newPixmap("pokemon/16/05.png", PixmapFormat.RGB565),
+                g.newPixmap("pokemon/16/06.png", PixmapFormat.RGB565),
+                g.newPixmap("pokemon/16/07.png", PixmapFormat.RGB565),
+                g.newPixmap("pokemon/16/08.png", PixmapFormat.RGB565),
+                g.newPixmap("pokemon/16/09.png", PixmapFormat.RGB565),
+                g.newPixmap("pokemon/16/10.png", PixmapFormat.RGB565),
+                g.newPixmap("pokemon/16/11.png", PixmapFormat.RGB565),
+                g.newPixmap("pokemon/16/12.png", PixmapFormat.RGB565),
+                g.newPixmap("pokemon/16/13.png", PixmapFormat.RGB565),
+                g.newPixmap("pokemon/16/14.png", PixmapFormat.RGB565),
+                g.newPixmap("pokemon/16/15.png", PixmapFormat.RGB565),
+                g.newPixmap("pokemon/16/16.png", PixmapFormat.RGB565)
+        };
 
-        Assets.pokedex = new Pixmap[15][16];
+
+        Assets.pokedex = new Pixmap[16][16]; //numPokemons, numSprites
         for(int i = 0; i < 16; i++) {
             Assets.pokedex[0][i] = Assets.bulbasaur[i];
             Assets.pokedex[1][i] = Assets.ivysaur[i];
@@ -361,6 +414,7 @@ public class LoadingScreen extends Pantalla {
             Assets.pokedex[12][i] = Assets.moltres[i];
             Assets.pokedex[13][i] = Assets.zapdos[i];
             Assets.pokedex[14][i] = Assets.articuno[i];
+            Assets.pokedex[15][i] = Assets.ekans[i];
         }
 
 

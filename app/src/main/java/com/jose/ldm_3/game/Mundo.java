@@ -5,8 +5,7 @@ import java.util.Random;
 public class Mundo {
 
     static final int MUNDO_ANCHO = 19;
-    static final int MUNDO_ALTO = 36;
-    static final int INCREMENTO_PUNTUACION = 10;
+    static final int MUNDO_ALTO = 34;
     static final float TICK_INICIAL = 0.5f;
     static final float TICK_DECREMENTO = 0.05f;
 
@@ -54,7 +53,7 @@ public class Mundo {
                 }
             }
         }
-        pokemonSalvaje = new Tripulacion(botinX, botinY, random.nextInt(15));
+        pokemonSalvaje = new Tripulacion(botinX, botinY, random.nextInt(16));
     }
 
     public void update(float deltaTime) {
@@ -74,7 +73,7 @@ public class Mundo {
 
             Tripulacion head = jollyroger.equipo.get(0);
             if (head.x == pokemonSalvaje.x && head.y == pokemonSalvaje.y) {
-                puntuacion += INCREMENTO_PUNTUACION;
+                puntuacion += pokemonSalvaje.puntos;
                 jollyroger.abordaje(pokemonSalvaje.numPokemon);
                 if (jollyroger.equipo.size() == MUNDO_ANCHO * MUNDO_ALTO) {
                     finalJuego = true;

@@ -90,8 +90,8 @@ public class JollyRoger{
         if(barco.x > 21)
             barco.x = 0;
         if(barco.y < 0)
-            barco.y = 38;
-        if(barco.y > 38)
+            barco.y = 34;
+        if(barco.y > 34)
             barco.y = 0;
 
         animacionRojo();

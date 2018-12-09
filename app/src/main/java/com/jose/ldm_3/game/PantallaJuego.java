@@ -1,7 +1,5 @@
 package com.jose.ldm_3.game;
 
-import android.graphics.Color;
-
 import com.jose.ldm_3.interfaces.Graficos;
 import com.jose.ldm_3.interfaces.Juego;
 import com.jose.ldm_3.interfaces.Pantalla;
@@ -19,7 +17,7 @@ public class PantallaJuego extends Pantalla {
         FinJuego
     }
 
-    EstadoJuego estado = EstadoJuego.Preparado;
+    public static EstadoJuego estado = EstadoJuego.Preparado;
     Mundo mundo;
     int antiguaPuntuacion = 0;
     String puntuacion = "0";
@@ -27,6 +25,10 @@ public class PantallaJuego extends Pantalla {
     public PantallaJuego(Juego juego) {
         super(juego);
         mundo = new Mundo();
+        if(Configuraciones.sonidoHabilitado) {
+            Assets.musicaJuego.setLooping(true);
+            Assets.musicaJuego.play();
+        }
     }
 
     @Override
@@ -54,19 +56,11 @@ public class PantallaJuego extends Pantalla {
         int len = touchEvents.size();
         for(int i = 0; i < len; i++) {
             TouchEvent event = touchEvents.get(i);
-            if(event.type == TouchEvent.TOUCH_UP) {
-                if(event.x < 64 && event.y < 64) {
-                    if(Configuraciones.sonidoHabilitado)
-                        Assets.pulsar.play(1);
-                    estado = EstadoJuego.Pausado;
-                    return;
-                }
-            }
             if(event.type == TouchEvent.TOUCH_DOWN) {
-                if(event.x < 64 && event.y > 416) {
+                if(event.x < 130 && event.y > 1150) {
                     mundo.jollyroger.girarIzquierda();
                 }
-                if(event.x > 256 && event.y > 416) {
+                if(event.x > 590 && event.y > 1150) {
                     mundo.jollyroger.girarDerecha();
                 }
             }
@@ -76,13 +70,14 @@ public class PantallaJuego extends Pantalla {
         if(mundo.finalJuego) {
             if(Configuraciones.sonidoHabilitado)
                 Assets.derrota.play(1);
+                Assets.musicaJuego.stop();
             estado = EstadoJuego.FinJuego;
         }
         if(antiguaPuntuacion != mundo.puntuacion) {
             antiguaPuntuacion = mundo.puntuacion;
             puntuacion = "" + antiguaPuntuacion;
             if(Configuraciones.sonidoHabilitado)
-                Assets.ataque.play(1);
+                Assets.capturar.play(1);
         }
     }
 
@@ -91,19 +86,20 @@ public class PantallaJuego extends Pantalla {
         for(int i = 0; i < len; i++) {
             TouchEvent event = touchEvents.get(i);
             if(event.type == TouchEvent.TOUCH_UP) {
-                if(event.x > 80 && event.x <= 240) {
-                    if(event.y > 100 && event.y <= 148) {
-                        if(Configuraciones.sonidoHabilitado)
+                if(inBounds(event, 102, 200, 516, 120)) {
+                    if(Configuraciones.sonidoHabilitado)
+                        Assets.pulsar.play(1);
+                    estado = EstadoJuego.Ejecutandose;
+                    return;
+                }
+                if(inBounds(event, 102, 360, 516, 120)) {
+                        if(Configuraciones.sonidoHabilitado) {
                             Assets.pulsar.play(1);
-                        estado = EstadoJuego.Ejecutandose;
-                        return;
-                    }
-                    if(event.y > 148 && event.y < 196) {
-                        if(Configuraciones.sonidoHabilitado)
-                            Assets.pulsar.play(1);
+                            Assets.musicaJuego.stop();
+                        }
+                        estado = EstadoJuego.Preparado;
                         juego.setScreen(new MainMenuScreen(juego));
                         return;
-                    }
                 }
             }
         }
@@ -114,10 +110,12 @@ public class PantallaJuego extends Pantalla {
         for(int i = 0; i < len; i++) {
             TouchEvent event = touchEvents.get(i);
             if(event.type == TouchEvent.TOUCH_UP) {
-                if(event.x >= 128 && event.x <= 192 &&
-                        event.y >= 200 && event.y <= 264) {
-                    if(Configuraciones.sonidoHabilitado)
+                if(inBounds(event, 295, 350, 130, 130)) {
+                    if(Configuraciones.sonidoHabilitado) {
                         Assets.pulsar.play(1);
+                        Assets.musicaJuego.stop();
+                    }
+                    estado = EstadoJuego.Preparado;
                     juego.setScreen(new MainMenuScreen(juego));
                     return;
                 }
@@ -125,11 +123,19 @@ public class PantallaJuego extends Pantalla {
         }
     }
 
+    private boolean inBounds(TouchEvent event, int x, int y, int width, int height) {
+        if(event.x > x && event.x < x + width - 1 &&
+                event.y > y && event.y < y + height - 1)
+            return true;
+        else
+            return false;
+    }
+
 
     @Override
     public void present(float deltaTime) {
         Graficos g = juego.getGraphics();
-        g.drawPixmap(Assets.fondo, 0, 0);
+        g.drawPixmap(Assets.fondo2, 0, 0);
         drawWorld(mundo);
         if (estado == EstadoJuego.Preparado)
             drawReadyUI();
@@ -140,7 +146,7 @@ public class PantallaJuego extends Pantalla {
         if (estado == EstadoJuego.FinJuego)
             drawGameOverUI();
 
-        drawText(g, puntuacion, g.getWidth() / 2 - puntuacion.length() * 20 / 2, g.getHeight() - 42);
+        drawText(g, puntuacion, g.getWidth() / 2 - puntuacion.length() * 24 / 2, 1200);
     }
 
     private void drawWorld(Mundo mundo) {
@@ -237,57 +243,52 @@ public class PantallaJuego extends Pantalla {
 
     private void drawReadyUI() {
         Graficos g = juego.getGraphics();
-
-        g.drawPixmap(Assets.preparado, 47, 100);
-        //g.drawLine(0, 416, 480, 416, Color.BLACK);
+        g.drawPixmap(Assets.preparado, 102, 400);
     }
 
     private void drawRunningUI() {
         Graficos g = juego.getGraphics();
-
-        //g.drawPixmap(Assets.botones, 0, 0, 64, 128, 64, 64);
-        //g.drawLine(0, 416, 480, 416, Color.BLACK);
-        g.drawPixmap(Assets.botones, 0, 1216, 64, 64, 64, 64);
-        g.drawPixmap(Assets.botones, 656, 1216, 0, 64, 64, 64);
+        g.drawPixmap(Assets.botonIzquierda, 0, 1150);
+        g.drawPixmap(Assets.botonDerecha, 590, 1150);
     }
 
     private void drawPausedUI() {
         Graficos g = juego.getGraphics();
-
-        g.drawPixmap(Assets.menupausa, 80, 100);
-        //g.drawLine(0, 416, 480, 416, Color.BLACK);
+        g.drawPixmap(Assets.menupausa, 0, 200);
     }
 
     private void drawGameOverUI() {
         Graficos g = juego.getGraphics();
-
-        g.drawPixmap(Assets.finjuego, 62, 100);
-        g.drawPixmap(Assets.botones, 128, 200, 0, 128, 64, 64);
-        //g.drawLine(0, 416, 480, 416, Color.BLACK);
+        g.drawPixmap(Assets.finjuego, 102, 200);
+        g.drawPixmap(Assets.botonSalir, 295, 350);
     }
 
-    public void drawText(Graficos g, String line, int x, int y) {
-        int len = line.length();
+    public void drawText(Graficos g, String linea, int x, int y) {
+        int len = linea.length();
         for (int i = 0; i < len; i++) {
-            char character = line.charAt(i);
+            char character = linea.charAt(i);
 
             if (character == ' ') {
-                x += 20;
+                x += 30;
                 continue;
             }
 
-            int srcX = 0;
-            int srcWidth = 0;
+            int index;
             if (character == '.') {
-                srcX = 200;
-                srcWidth = 10;
+                //index = 11;
+                continue;
+            } else if(character == 'o') {
+                //index = 10;
+                continue;
+            } else if(character == 'p') {
+                //index = 12;
+                continue;
             } else {
-                srcX = (character - '0') * 20;
-                srcWidth = 20;
+                index = (character - '0');
             }
 
-            g.drawPixmap(Assets.numeros, x, y, srcX, 0, srcWidth, 32);
-            x += srcWidth;
+            g.drawPixmap(Assets.numeros[index], x, y);
+            x += 30;
         }
     }
 

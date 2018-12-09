@@ -9,8 +9,14 @@ import com.jose.ldm_3.interfaces.Input.TouchEvent;
 
 
 public class PantallaAyuda extends Pantalla {
+
+
     public PantallaAyuda(Juego juego) {
         super(juego);
+        if(Configuraciones.sonidoHabilitado) {
+            Assets.musicaAyuda.setLooping(true);
+            Assets.musicaAyuda.play();
+        }
     }
 
     @Override
@@ -22,22 +28,39 @@ public class PantallaAyuda extends Pantalla {
         for(int i = 0; i < len; i++) {
             TouchEvent event = touchEvents.get(i);
             if(event.type == TouchEvent.TOUCH_UP) {
-                if(event.x > 256 && event.y > 416 ) {
-                    juego.setScreen(new PantallaAyuda2(juego));
-                    if(Configuraciones.sonidoHabilitado)
+                if(inBounds(event, 295, 1150, 130, 130)) {
+                    juego.setScreen(new MainMenuScreen(juego));
+                    if(Configuraciones.sonidoHabilitado) {
+                        Assets.musicaAyuda.stop();
                         Assets.pulsar.play(1);
+                    }
+                    return;
+                } else if(inBounds(event, 590, 1150, 130, 130)) {
+                    juego.setScreen(new PantallaAyuda2(juego));
+                    if(Configuraciones.sonidoHabilitado) {
+                        Assets.pulsar.play(1);
+                    }
                     return;
                 }
             }
         }
     }
 
+    private boolean inBounds(TouchEvent event, int x, int y, int width, int height) {
+        if(event.x > x && event.x < x + width - 1 &&
+                event.y > y && event.y < y + height - 1)
+            return true;
+        else
+            return false;
+    }
+
     @Override
     public void present(float deltaTime) {
         Graficos g = juego.getGraphics();
-        g.drawPixmap(Assets.fondo, 0, 0);
-        g.drawPixmap(Assets.ayuda1, 64, 100);
-        g.drawPixmap(Assets.botones, 256, 416, 0, 64, 64, 64);
+        g.drawPixmap(Assets.fondo2, 0, 0);
+        g.drawPixmap(Assets.ayuda1, 0, 0);
+        g.drawPixmap(Assets.botonSalir, 295, 1150);
+        g.drawPixmap(Assets.botonDerecha, 590, 1150);
     }
 
     @Override

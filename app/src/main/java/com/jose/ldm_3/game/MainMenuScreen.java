@@ -9,8 +9,15 @@ import java.util.List;
 
 
 public class MainMenuScreen extends Pantalla {
+
+
     public MainMenuScreen(Juego juego) {
         super(juego);
+        JuegoPiratas.onMainMenu = true;
+        if(Configuraciones.sonidoHabilitado) {
+            Assets.musicaInicio.setLooping(true);
+            Assets.musicaInicio.play();
+        }
     }
 
     @Override
@@ -23,28 +30,35 @@ public class MainMenuScreen extends Pantalla {
         for(int i = 0; i < len; i++) {
             TouchEvent event = touchEvents.get(i);
             if(event.type == TouchEvent.TOUCH_UP) {
-                if(inBounds(event, 0, g.getHeight() - 64, 64, 64)) {
+                if(inBounds(event, 295, 1150, 130, 130)) {
                     Configuraciones.sonidoHabilitado = !Configuraciones.sonidoHabilitado;
-                    if(Configuraciones.sonidoHabilitado)
+                    if(Configuraciones.sonidoHabilitado) {
                         Assets.pulsar.play(1);
+                        Assets.musicaInicio.play();
+                    } else {
+                        Assets.musicaInicio.stop();
+                    }
                 }
-                if(inBounds(event, 64, 220, 192, 42) ) {
+                if(inBounds(event, 102, 590, 516, 119) ) {
+                    JuegoPiratas.onMainMenu = false;
+                    Assets.musicaInicio.stop();
                     juego.setScreen(new PantallaJuego(juego));
                     if(Configuraciones.sonidoHabilitado)
                     {Assets.pulsar.play(1);
                     }
-
-
-
                     return;
                 }
-                if(inBounds(event, 64, 220 + 42, 192, 42) ) {
+                if(inBounds(event, 102, 720, 516, 119) ) {
+                    JuegoPiratas.onMainMenu = false;
+                    Assets.musicaInicio.stop();
                     juego.setScreen(new PantallaMaximasPuntuaciones(juego));
                     if(Configuraciones.sonidoHabilitado)
                         Assets.pulsar.play(1);
                     return;
                 }
-                if(inBounds(event, 64, 220 + 84, 192, 42) ) {
+                if(inBounds(event, 102, 850, 516, 119) ) {
+                    JuegoPiratas.onMainMenu = false;
+                    Assets.musicaInicio.stop();
                     juego.setScreen(new PantallaAyuda(juego));
                     if(Configuraciones.sonidoHabilitado)
                         Assets.pulsar.play(1);
@@ -66,13 +80,13 @@ public class MainMenuScreen extends Pantalla {
     public void present(float deltaTime) {
         Graficos g = juego.getGraphics();
 
-        g.drawPixmap(Assets.fondo, 0, 0);
-        g.drawPixmap(Assets.logo, 32, 20);
-        g.drawPixmap(Assets.menuprincipal, 64, 220);
+        g.drawPixmap(Assets.fondo2, 0, 0);
+        g.drawPixmap(Assets.logo, 0, 20);
+        g.drawPixmap(Assets.menuprincipal, 0, 580);
         if(Configuraciones.sonidoHabilitado)
-            g.drawPixmap(Assets.botones, 0, 416, 0, 0, 64, 64);
+            g.drawPixmap(Assets.botonVolumen, 295, 1150);
         else
-            g.drawPixmap(Assets.botones, 0, 416, 64, 0, 64, 64);
+            g.drawPixmap(Assets.botonMute, 295, 1150);
     }
 
     @Override
