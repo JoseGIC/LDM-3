@@ -6,7 +6,7 @@ import com.jose.ldm_3.interfaces.Juego;
 import com.jose.ldm_3.interfaces.Pantalla;
 
 
-public class JuegoPiratas extends AndroidJuego {
+public class JuegoPokemon extends AndroidJuego {
 
     public static boolean onMainMenu = false;
 
@@ -21,6 +21,7 @@ public class JuegoPiratas extends AndroidJuego {
             if(Configuraciones.sonidoHabilitado) {
                 Assets.musicaInicio.stop();
             }
+            Configuraciones.save(this.getFileIO());
             finish();
         } else if(PantallaJuego.estado == PantallaJuego.EstadoJuego.Ejecutandose){
             if(Configuraciones.sonidoHabilitado)

@@ -9,9 +9,12 @@ import com.jose.ldm_3.interfaces.Input.TouchEvent;
 
 
 public class PantallaAyuda3 extends Pantalla {
+
+
     public PantallaAyuda3(Juego juego) {
         super(juego);
     }
+
 
     @Override
     public void update(float deltaTime) {
@@ -24,9 +27,8 @@ public class PantallaAyuda3 extends Pantalla {
             if(event.type == TouchEvent.TOUCH_UP) {
                 if(inBounds(event, 0, 1150, 130, 130)) {
                     juego.setScreen(new PantallaAyuda2(juego));
-                    if(Configuraciones.sonidoHabilitado) {
+                    if(Configuraciones.sonidoHabilitado)
                         Assets.pulsar.play(1);
-                    }
                     return;
                 } else if(inBounds(event, 295, 1150, 130, 130)) {
                     juego.setScreen(new MainMenuScreen(juego));
@@ -35,10 +37,17 @@ public class PantallaAyuda3 extends Pantalla {
                         Assets.pulsar.play(1);
                     }
                     return;
+                } else if(inBounds(event, 590, 1150, 130, 130)) {
+                    juego.setScreen(new PantallaAyuda4(juego));
+                    if(Configuraciones.sonidoHabilitado) {
+                        Assets.pulsar.play(1);
+                    }
+                    return;
                 }
             }
         }
     }
+
 
     private boolean inBounds(TouchEvent event, int x, int y, int width, int height) {
         if(event.x > x && event.x < x + width - 1 &&
@@ -48,27 +57,25 @@ public class PantallaAyuda3 extends Pantalla {
             return false;
     }
 
+
     @Override
     public void present(float deltaTime) {
         Graficos g = juego.getGraphics();
-        g.drawPixmap(Assets.fondo2, 0, 0);
-        g.drawPixmap(Assets.ayuda3, 0, 0);
-        g.drawPixmap(Assets.botonIzquierda, 0, 1150);
-        g.drawPixmap(Assets.botonSalir, 295, 1150);
+        g.drawPixmap(Assets.fondo, 0, 0);
+        g.drawPixmap(Assets.pantallaAyuda3, 0, 0);
+        g.drawPixmap(Assets.botones, 0, 1150, 130, 0, 130, 130);
+        g.drawPixmap(Assets.botones, 295, 1150, 130, 260, 130, 130);
+        g.drawPixmap(Assets.botones, 590, 1150, 0, 0, 130, 130);
     }
+
 
     @Override
-    public void pause() {
-
-    }
+    public void pause() {}
 
     @Override
-    public void resume() {
-
-    }
+    public void resume() {}
 
     @Override
-    public void dispose() {
+    public void dispose() {}
 
-    }
 }

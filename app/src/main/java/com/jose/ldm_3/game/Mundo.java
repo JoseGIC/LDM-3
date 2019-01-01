@@ -1,39 +1,78 @@
 package com.jose.ldm_3.game;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
+
 
 public class Mundo {
 
-    static final int MUNDO_ANCHO = 19;
-    static final int MUNDO_ALTO = 34;
-    static final float TICK_INICIAL = 0.5f;
+    static final int MUNDO_ANCHO = 10;
+    static final int MUNDO_ALTO = 16;
+    static final float TICK_INICIAL = 0.8f;
     static final float TICK_DECREMENTO = 0.05f;
+    static final float TICK_TRANSICION = 0.1f;
+    static final float TICK_TRANSICION_DECREMENTO = 0.00625f;
 
-    public JollyRoger jollyroger;
-    public static Tripulacion pokemonSalvaje;
+    public Entrenador entrenador;
+    public static Equipo pokemonSalvaje;
     public boolean finalJuego = false;
+    public boolean victoria = false;
     public int puntuacion = 0;
 
     boolean campos[][] = new boolean[MUNDO_ANCHO][MUNDO_ALTO];
+    ArrayList<Integer> listaPokemons;
     Random random = new Random();
-    float tiempoTick = 0;
-    static float tick = TICK_INICIAL;
+    float tiempoTick, tiempoTickTransicion;
+    static float tick, tickTransicion;
+
+
 
     public Mundo() {
-        jollyroger = new JollyRoger();
-        colocarBotin();
+        tiempoTick = 0;
+        tiempoTickTransicion = 0;
+        tick = TICK_INICIAL;
+        tickTransicion = TICK_TRANSICION;
+        entrenador = new Entrenador();
+        crearListaPokemons();
+        colocarPokemon();
     }
 
-    private void colocarBotin() {
+
+    public void resetTime() {
+        tiempoTick = 0;
+        tiempoTickTransicion = 0;
+        tick = TICK_INICIAL;
+        tickTransicion = TICK_TRANSICION;
+    }
+
+
+    private void crearListaPokemons() {
+        listaPokemons = new ArrayList<>();
+        for(int i = 1; i <= 151; i++) {
+            listaPokemons.add(i);
+        }
+        Collections.shuffle(listaPokemons);
+    }
+
+
+    private int nuevoPokemon() {
+        int numPokemon = listaPokemons.get(0);
+        listaPokemons.remove(0);
+        return numPokemon;
+    }
+
+
+    private void colocarPokemon() {
         for (int x = 0; x < MUNDO_ANCHO; x++) {
             for (int y = 0; y < MUNDO_ALTO; y++) {
                 campos[x][y] = false;
             }
         }
 
-        int len = jollyroger.equipo.size();
+        int len = entrenador.equipo.size();
         for (int i = 0; i < len; i++) {
-            Tripulacion equipo = jollyroger.equipo.get(i);
+            Equipo equipo = entrenador.equipo.get(i);
             if(equipo.x < MUNDO_ANCHO && equipo.y < MUNDO_ALTO) {
                 campos[equipo.x][equipo.y] = true;
             }
@@ -53,55 +92,55 @@ public class Mundo {
                 }
             }
         }
-        pokemonSalvaje = new Tripulacion(botinX, botinY, random.nextInt(16));
+        pokemonSalvaje = new Equipo(botinX, botinY, nuevoPokemon());
     }
+
 
     public void update(float deltaTime) {
         if (finalJuego)
             return;
 
         tiempoTick += deltaTime;
+        tiempoTickTransicion += deltaTime;
 
-        while (tiempoTick > tick) {
+        while(tiempoTick > tick) {
             tiempoTick -= tick;
-            jollyroger.avance();
-            animacionPokemonSalvaje();
-            if (jollyroger.comprobarChoque()) {
+            entrenador.avance();
+            pokemonSalvaje.animacion();
+            if (entrenador.comprobarChoque()) {
                 finalJuego = true;
                 return;
             }
 
-            Tripulacion head = jollyroger.equipo.get(0);
+            Equipo head = entrenador.equipo.get(0);
             if (head.x == pokemonSalvaje.x && head.y == pokemonSalvaje.y) {
-                puntuacion += pokemonSalvaje.puntos;
-                jollyroger.abordaje(pokemonSalvaje.numPokemon);
-                if (jollyroger.equipo.size() == MUNDO_ANCHO * MUNDO_ALTO) {
-                    finalJuego = true;
+                puntuacion++;
+                entrenador.capturar(pokemonSalvaje.numero);
+                if (entrenador.equipo.size() == Assets.pokemons.length - 1) { // 151
+                    resetTime();
+                    victoria = true;
                     return;
                 } else {
-                    colocarBotin();
+                    colocarPokemon();
                 }
 
-                if (puntuacion % 100 == 0 && tick - TICK_DECREMENTO > 0) {
-                    tick -= TICK_DECREMENTO;
+                if(entrenador.equipo.size() % 5 == 0) {
+                    if(tick - TICK_DECREMENTO > 0) {
+                        tick -= TICK_DECREMENTO;
+                        if(tickTransicion - TICK_TRANSICION_DECREMENTO > 0) {
+                            tickTransicion -= TICK_TRANSICION_DECREMENTO;
+                        }
+                    }
                 }
+            }
+        }
+
+        while(tiempoTickTransicion > tickTransicion) {
+            tiempoTickTransicion -= tickTransicion;
+            for(int i = 0; i < entrenador.equipo.size(); i++) {
+                entrenador.equipo.get(i).transicion();
             }
         }
     }
 
-
-    public void animacionPokemonSalvaje() {
-        if (pokemonSalvaje.lastPixmap == Assets.pokedex[pokemonSalvaje.numPokemon][0]) {
-            pokemonSalvaje.pixmap = Assets.pokedex[pokemonSalvaje.numPokemon][1];
-        } else if (pokemonSalvaje.lastPixmap == Assets.pokedex[pokemonSalvaje.numPokemon][1]) {
-            pokemonSalvaje.pixmap = Assets.pokedex[pokemonSalvaje.numPokemon][2];
-        } else if (pokemonSalvaje.lastPixmap == Assets.pokedex[pokemonSalvaje.numPokemon][2]) {
-            pokemonSalvaje.pixmap = Assets.pokedex[pokemonSalvaje.numPokemon][3];
-        } else if (pokemonSalvaje.lastPixmap == Assets.pokedex[pokemonSalvaje.numPokemon][3]) {
-            pokemonSalvaje.pixmap = Assets.pokedex[pokemonSalvaje.numPokemon][0];
-        } else {
-            pokemonSalvaje.pixmap = Assets.pokedex[pokemonSalvaje.numPokemon][0];
-        }
-        pokemonSalvaje.lastPixmap = pokemonSalvaje.pixmap;
-    }
 }

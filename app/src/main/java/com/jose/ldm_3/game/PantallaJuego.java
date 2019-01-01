@@ -4,23 +4,25 @@ import com.jose.ldm_3.interfaces.Graficos;
 import com.jose.ldm_3.interfaces.Juego;
 import com.jose.ldm_3.interfaces.Pantalla;
 import com.jose.ldm_3.interfaces.Input.TouchEvent;
-import com.jose.ldm_3.interfaces.Pixmap;
 
 import java.util.List;
 
 
 public class PantallaJuego extends Pantalla {
+
     enum EstadoJuego {
         Preparado,
         Ejecutandose,
         Pausado,
-        FinJuego
+        FinJuego,
+        Victoria
     }
 
     public static EstadoJuego estado = EstadoJuego.Preparado;
     Mundo mundo;
     int antiguaPuntuacion = 0;
     String puntuacion = "0";
+
 
     public PantallaJuego(Juego juego) {
         super(juego);
@@ -30,6 +32,7 @@ public class PantallaJuego extends Pantalla {
             Assets.musicaJuego.play();
         }
     }
+
 
     @Override
     public void update(float deltaTime) {
@@ -44,13 +47,16 @@ public class PantallaJuego extends Pantalla {
             updatePaused(touchEvents);
         if(estado == EstadoJuego.FinJuego)
             updateGameOver(touchEvents);
-
+        if(estado == EstadoJuego.Victoria)
+            updateVictory(touchEvents);
     }
+
 
     private void updateReady(List<TouchEvent> touchEvents) {
         if(touchEvents.size() > 0)
             estado = EstadoJuego.Ejecutandose;
     }
+
 
     private void updateRunning(List<TouchEvent> touchEvents, float deltaTime) {
         int len = touchEvents.size();
@@ -58,19 +64,27 @@ public class PantallaJuego extends Pantalla {
             TouchEvent event = touchEvents.get(i);
             if(event.type == TouchEvent.TOUCH_DOWN) {
                 if(event.x < 130 && event.y > 1150) {
-                    mundo.jollyroger.girarIzquierda();
+                    mundo.entrenador.girarIzquierda();
                 }
                 if(event.x > 590 && event.y > 1150) {
-                    mundo.jollyroger.girarDerecha();
+                    mundo.entrenador.girarDerecha();
                 }
             }
         }
 
         mundo.update(deltaTime);
+        if(mundo.victoria) {
+            if(Configuraciones.sonidoHabilitado) {
+                Assets.musicaJuego.stop();
+                Assets.musicaVictoria.play();
+            }
+            estado = EstadoJuego.Victoria;
+        }
         if(mundo.finalJuego) {
-            if(Configuraciones.sonidoHabilitado)
+            if(Configuraciones.sonidoHabilitado) {
                 Assets.derrota.play(1);
                 Assets.musicaJuego.stop();
+            }
             estado = EstadoJuego.FinJuego;
         }
         if(antiguaPuntuacion != mundo.puntuacion) {
@@ -80,6 +94,7 @@ public class PantallaJuego extends Pantalla {
                 Assets.capturar.play(1);
         }
     }
+
 
     private void updatePaused(List<TouchEvent> touchEvents) {
         int len = touchEvents.size();
@@ -93,24 +108,26 @@ public class PantallaJuego extends Pantalla {
                     return;
                 }
                 if(inBounds(event, 102, 360, 516, 120)) {
-                        if(Configuraciones.sonidoHabilitado) {
-                            Assets.pulsar.play(1);
-                            Assets.musicaJuego.stop();
-                        }
-                        estado = EstadoJuego.Preparado;
-                        juego.setScreen(new MainMenuScreen(juego));
-                        return;
+                    if(Configuraciones.sonidoHabilitado) {
+                        Assets.pulsar.play(1);
+                        Assets.musicaJuego.stop();
+                    }
+                    mundo.resetTime();
+                    estado = EstadoJuego.Preparado;
+                    juego.setScreen(new MainMenuScreen(juego));
+                    return;
                 }
             }
         }
     }
+
 
     private void updateGameOver(List<TouchEvent> touchEvents) {
         int len = touchEvents.size();
         for(int i = 0; i < len; i++) {
             TouchEvent event = touchEvents.get(i);
             if(event.type == TouchEvent.TOUCH_UP) {
-                if(inBounds(event, 295, 350, 130, 130)) {
+                if(inBounds(event, 295, 400, 130, 130)) {
                     if(Configuraciones.sonidoHabilitado) {
                         Assets.pulsar.play(1);
                         Assets.musicaJuego.stop();
@@ -123,145 +140,100 @@ public class PantallaJuego extends Pantalla {
         }
     }
 
+
+    private void updateVictory(List<TouchEvent> touchEvents) {
+        int len = touchEvents.size();
+        for(int i = 0; i < len; i++) {
+            TouchEvent event = touchEvents.get(i);
+            if(event.type == TouchEvent.TOUCH_UP) {
+                if(inBounds(event, 295, 400, 130, 130)) { // cambiar
+                    if(Configuraciones.sonidoHabilitado) {
+                        Assets.pulsar.play(1);
+                        Assets.musicaVictoria.stop();
+                    }
+                    estado = EstadoJuego.Preparado;
+                    juego.setScreen(new MainMenuScreen(juego));
+                    return;
+                }
+            }
+        }
+    }
+
+
     private boolean inBounds(TouchEvent event, int x, int y, int width, int height) {
-        if(event.x > x && event.x < x + width - 1 &&
-                event.y > y && event.y < y + height - 1)
+        if(event.x > x && event.x < x + width - 1 && event.y > y && event.y < y + height - 1) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 
 
     @Override
     public void present(float deltaTime) {
         Graficos g = juego.getGraphics();
-        g.drawPixmap(Assets.fondo2, 0, 0);
+        g.drawPixmap(Assets.fondo, 0, 0);
         drawWorld(mundo);
-        if (estado == EstadoJuego.Preparado)
+        if(estado == EstadoJuego.Preparado)
             drawReadyUI();
-        if (estado == EstadoJuego.Ejecutandose)
+        if(estado == EstadoJuego.Ejecutandose)
             drawRunningUI();
-        if (estado == EstadoJuego.Pausado)
+        if(estado == EstadoJuego.Pausado)
             drawPausedUI();
-        if (estado == EstadoJuego.FinJuego)
+        if(estado == EstadoJuego.FinJuego)
             drawGameOverUI();
+        if(estado == EstadoJuego.Victoria)
+            drawVictoryUI();
 
         drawText(g, puntuacion, g.getWidth() / 2 - puntuacion.length() * 24 / 2, 1200);
     }
 
+
     private void drawWorld(Mundo mundo) {
         Graficos g = juego.getGraphics();
-        JollyRoger jollyroger = mundo.jollyroger;
-        Tripulacion head = jollyroger.equipo.get(0);
+        Equipo personaje = mundo.pokemonSalvaje;
 
-        Tripulacion pokemonSalvaje = mundo.pokemonSalvaje;
+        g.drawPixmap(Assets.pokemons[personaje.numero], personaje.xT, personaje.yT, personaje.srcX, personaje.srcY, 64, 64);
 
-
-        Pixmap pokemonSalvajePixmap = null;
-        if(pokemonSalvaje.pixmap != null) {
-            pokemonSalvajePixmap = pokemonSalvaje.pixmap;
-        } else {
-            pokemonSalvajePixmap = Assets.pokedex[pokemonSalvaje.numPokemon][0];
+        for(int i = 0; i < mundo.entrenador.equipo.size(); i++) {
+            personaje = mundo.entrenador.equipo.get(i);
+            g.drawPixmap(Assets.pokemons[personaje.numero], personaje.xT, personaje.yT, personaje.srcX, personaje.srcY, 64, 64);
         }
-        int x = pokemonSalvaje.x * 32;
-        int y = pokemonSalvaje.y * 32;
-        g.drawPixmap(pokemonSalvajePixmap, x, y);
-
-
-        int len = jollyroger.equipo.size();
-        for(int i = 1; i < len; i++) {
-            Tripulacion pokemon = jollyroger.equipo.get(i);
-            Pixmap pokemonPixmap = null;
-
-            if (pokemon.direccion == JollyRoger.ABAJO) {
-                if(pokemon.pixmap != null) {
-                    pokemonPixmap = pokemon.pixmap;
-                } else {
-                    pokemonPixmap = Assets.pokedex[pokemon.numPokemon][0];
-                }
-            }
-            if (pokemon.direccion == JollyRoger.IZQUIERDA) {
-                if(pokemon.pixmap != null) {
-                    pokemonPixmap = pokemon.pixmap;
-                } else {
-                    pokemonPixmap = Assets.pokedex[pokemon.numPokemon][4];
-                }
-            }
-            if (pokemon.direccion == JollyRoger.DERECHA) {
-                if(pokemon.pixmap != null) {
-                    pokemonPixmap = pokemon.pixmap;
-                } else {
-                    pokemonPixmap = Assets.pokedex[pokemon.numPokemon][8];
-                }
-            }
-            if (pokemon.direccion == JollyRoger.ARRIBA) {
-                if(pokemon.pixmap != null) {
-                    pokemonPixmap = pokemon.pixmap;
-                } else {
-                    pokemonPixmap = Assets.pokedex[pokemon.numPokemon][12];
-                }
-            }
-            x = pokemon.x * 32;
-            y = pokemon.y * 32;
-            g.drawPixmap(pokemonPixmap, x, y);
-        }
-
-
-        Pixmap headPixmap = null;
-        if (jollyroger.direccion == JollyRoger.ABAJO) {
-            if(jollyroger.rojoPixmap != null) {
-                headPixmap = jollyroger.rojoPixmap;
-            } else {
-                headPixmap = Assets.rojo[1];
-            }
-        }
-        if (jollyroger.direccion == JollyRoger.IZQUIERDA) {
-            if(jollyroger.rojoPixmap != null) {
-                headPixmap = jollyroger.rojoPixmap;
-            } else {
-                headPixmap = Assets.rojo[4];
-            }
-        }
-        if (jollyroger.direccion == JollyRoger.DERECHA) {
-            if(jollyroger.rojoPixmap != null) {
-                headPixmap = jollyroger.rojoPixmap;
-            } else {
-                headPixmap = Assets.rojo[8];
-            }
-        }
-        if (jollyroger.direccion == JollyRoger.ARRIBA) {
-            if(jollyroger.rojoPixmap != null) {
-                headPixmap = jollyroger.rojoPixmap;
-            } else {
-                headPixmap = Assets.rojo[12];
-            }
-        }
-        x = head.x * 32;
-        y = head.y * 32;
-        g.drawPixmap(headPixmap, x, y);
     }
+
 
     private void drawReadyUI() {
         Graficos g = juego.getGraphics();
         g.drawPixmap(Assets.preparado, 102, 400);
     }
 
+
     private void drawRunningUI() {
         Graficos g = juego.getGraphics();
-        g.drawPixmap(Assets.botonIzquierda, 0, 1150);
-        g.drawPixmap(Assets.botonDerecha, 590, 1150);
+        g.drawPixmap(Assets.botones, 0, 1150, 130, 0, 130, 130);
+        g.drawPixmap(Assets.botones, 590, 1150, 0, 0, 130, 130);
     }
+
 
     private void drawPausedUI() {
         Graficos g = juego.getGraphics();
-        g.drawPixmap(Assets.menupausa, 0, 200);
+        g.drawPixmap(Assets.menuPausa, 0, 200);
     }
+
 
     private void drawGameOverUI() {
         Graficos g = juego.getGraphics();
-        g.drawPixmap(Assets.finjuego, 102, 200);
-        g.drawPixmap(Assets.botonSalir, 295, 350);
+        g.drawPixmap(Assets.finJuego, 102, 200);
+        g.drawPixmap(Assets.botones, 295, 400, 130, 260, 130, 130);
     }
+
+
+    private void drawVictoryUI() {
+        Graficos g = juego.getGraphics();
+        g.drawPixmap(Assets.victoria, 102, 200);
+        g.drawPixmap(Assets.botones, 295, 400, 130, 260, 130, 130);
+    }
+
 
     public void drawText(Graficos g, String linea, int x, int y) {
         int len = linea.length();
@@ -269,28 +241,17 @@ public class PantallaJuego extends Pantalla {
             char character = linea.charAt(i);
 
             if (character == ' ') {
-                x += 30;
+                x += 180;
                 continue;
             }
 
-            int index;
-            if (character == '.') {
-                //index = 11;
-                continue;
-            } else if(character == 'o') {
-                //index = 10;
-                continue;
-            } else if(character == 'p') {
-                //index = 12;
-                continue;
-            } else {
-                index = (character - '0');
-            }
+            int srcX = (character - '0') * 25;
 
-            g.drawPixmap(Assets.numeros[index], x, y);
-            x += 30;
+            g.drawPixmap(Assets.numeros, x, y, srcX, 0, 25, 40);
+            x += 25;
         }
     }
+
 
     @Override
     public void pause() {
@@ -303,13 +264,12 @@ public class PantallaJuego extends Pantalla {
         }
     }
 
-    @Override
-    public void resume() {
-
-    }
 
     @Override
-    public void dispose() {
+    public void resume() {}
 
-    }
+
+    @Override
+    public void dispose() {}
+
 }

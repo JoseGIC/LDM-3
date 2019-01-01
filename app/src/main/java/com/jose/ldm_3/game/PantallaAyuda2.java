@@ -16,6 +16,7 @@ public class PantallaAyuda2 extends Pantalla {
         super(juego);
     }
 
+
     @Override
     public void update(float deltaTime) {
         List<TouchEvent> touchEvents = juego.getInput().getTouchEvents();
@@ -26,7 +27,7 @@ public class PantallaAyuda2 extends Pantalla {
             TouchEvent event = touchEvents.get(i);
             if(event.type == TouchEvent.TOUCH_UP) {
                 if(inBounds(event, 0, 1150, 130, 130)) {
-                    juego.setScreen(new PantallaAyuda(juego));
+                    juego.setScreen(new PantallaAyuda1(juego));
                     if(Configuraciones.sonidoHabilitado)
                         Assets.pulsar.play(1);
                     return;
@@ -48,6 +49,7 @@ public class PantallaAyuda2 extends Pantalla {
         }
     }
 
+
     private boolean inBounds(TouchEvent event, int x, int y, int width, int height) {
         if(event.x > x && event.x < x + width - 1 &&
                 event.y > y && event.y < y + height - 1)
@@ -56,29 +58,26 @@ public class PantallaAyuda2 extends Pantalla {
             return false;
     }
 
+
     @Override
     public void present(float deltaTime) {
         Graficos g = juego.getGraphics();
-        g.drawPixmap(Assets.fondo2, 0, 0);
-        g.drawPixmap(Assets.ayuda2, 0, 0);
-        g.drawPixmap(Assets.botonIzquierda, 0, 1150);
-        g.drawPixmap(Assets.botonSalir, 295, 1150);
-        g.drawPixmap(Assets.botonDerecha, 590, 1150);
+        g.drawPixmap(Assets.fondo, 0, 0);
+        g.drawPixmap(Assets.pantallaAyuda2, 0, 0);
+        g.drawPixmap(Assets.botones, 0, 1150, 130, 0, 130, 130);
+        g.drawPixmap(Assets.botones, 295, 1150, 130, 260, 130, 130);
+        g.drawPixmap(Assets.botones, 590, 1150, 0, 0, 130, 130);
     }
+
 
     @Override
-    public void pause() {
-
-    }
+    public void pause() {}
 
     @Override
-    public void resume() {
-
-    }
+    public void resume() {}
 
     @Override
-    public void dispose() {
+    public void dispose() {}
 
-    }
 }
 
